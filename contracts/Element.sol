@@ -87,7 +87,7 @@ contract Element is IElement, ElementMetadata, ERC721, VRFConsumerBaseV2 {
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         require(mintInitialized[tokenId], "Invalid token id");
-        return buildMetadata(characterData[tokenId]);
+        return buildTokenURI(characterData[tokenId]);
     }
 
     function _requestRandomWords(uint256 mintId) internal returns (uint256) {

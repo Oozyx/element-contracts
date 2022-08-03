@@ -141,7 +141,14 @@ contract ElementMetadata is IElementMetadata {
         skillStrings[Class.Rogue][Skill.Skill4] = "Poisoned Blade";
     }
 
-    function buildMetadata(CharacterData memory data) public view override returns (string memory) {
+    function buildTokenURI(CharacterData memory data) public view override returns (string memory) {
+        return
+            string(
+                abi.encodePacked("data:application/json;base64,", Base64.encode(abi.encodePacked(_buildMetadata(data))))
+            );
+    }
+
+    function _buildMetadata(CharacterData memory data) internal view returns (string memory) {
         // MUST CONCATENATE THESE STRINGS IN THIS ORDER
         return string.concat(_buildCharacterMetadata(data), _buildStatsMetadata(data.userDefinedData.stats));
     }
