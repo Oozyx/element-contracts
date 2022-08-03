@@ -20,8 +20,13 @@ const fixture = deployments.createFixture(async () => {
   const element = await Element.deploy(mintPrice, vrfConfig);
   await element.deployed();
 
+  // fund the subscription
+  tx = await vrfCoordinator.fundSubscription(await element.subscriptionId(), ethers.utils.parseEther("100"));
+  await tx.wait();
+
   return {
     element,
+    vrfCoordinator,
     mintPrice,
   };
 });

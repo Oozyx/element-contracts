@@ -1,14 +1,16 @@
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
+const { mine } = require("@nomicfoundation/hardhat-network-helpers");
 
 const { fixture } = require("./fixture");
 
 describe("Element", async () => {
   let element;
+  let vrfCoordinator;
   let mintPrice;
 
   beforeEach(async () => {
-    ({ element, mintPrice } = await fixture());
+    ({ element, vrfCoordinator, mintPrice } = await fixture());
   });
 
   it("should test", async () => {
@@ -17,7 +19,15 @@ describe("Element", async () => {
 
     // mint
     tx = await element.mint(characterData, { value: mintPrice });
-    await tx.wait();
+    receipt = await tx.wait();
+    const requestId = receipt.events[1].args[1];
+
+    // fulfill randomness
+    tx = await vrfCoordinator.fulfillRandomWordsWithOverride(requestId, element.address, [123456789]);
+    receipt = await tx.wait();
+
+    // mine blocks
+    mine(1000);
 
     // get token metadata
     const metadata = await element.tokenURI(0);
