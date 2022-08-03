@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.0;
 
-import { Race, Gender, Class, Stats, CharacterData, VRFConfig } from "./ElementTypes.sol";
+import { Race, Gender, Class, Trait, Skill, Region, Stats, UserDefinedData, RandomizedData, CharacterData, VRFConfig } from "./ElementTypes.sol";
 import { ElementMetadata } from "./ElementMetadata.sol";
 import { IElement } from "./interfaces/IElement.sol";
 import { ElementUtils } from "./libraries/ElementUtils.sol";
@@ -39,11 +39,18 @@ contract Element is IElement, ElementMetadata, ERC721, VRFConsumerBaseV2 {
     /**
 
      */
-    function mint(CharacterData calldata data) external payable override {
+    function mint(UserDefinedData calldata data) external payable override {
         require(msg.value == mintPrice, "Invalid msg.value");
         require(ElementUtils.verifyStats(data.stats), "Invalid stats");
 
-        characterData[mintCount] = data;
+        // generate randomized data
+        RandomizedData memory randomized = RandomizedData(
+            Region.Region1,
+            [Trait.Trait1, Trait.Trait1],
+            [Skill.Skill1, Skill.Skill1]
+        );
+
+        characterData[mintCount] = CharacterData(data, randomized);
         console.log("Inside contract - ", data.stats.strength);
 
         _safeMint(msg.sender, mintCount++);
@@ -55,7 +62,7 @@ contract Element is IElement, ElementMetadata, ERC721, VRFConsumerBaseV2 {
     function mintFromExisting(
         address collection,
         uint256 tokenId,
-        CharacterData calldata data
+        UserDefinedData calldata data
     ) external payable override {}
 
     function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal virtual override {}

@@ -13,7 +13,7 @@ describe("Element", async () => {
 
   it("should test", async () => {
     // character data
-    const characterData = ["George", 0, 0, 0, [20, 20, 20, 20, 20, 0]];
+    const characterData = [0, 0, 0, [20, 20, 20, 20, 20, 0], "George", "ETH"];
 
     // mint
     tx = await element.mint(characterData, { value: mintPrice });
