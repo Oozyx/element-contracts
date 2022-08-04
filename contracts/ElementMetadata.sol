@@ -5,8 +5,9 @@ import { Race, Gender, Class, Trait, Skill, Region, Stats, CharacterData } from 
 import { IElementMetadata } from "./interfaces/IElementMetadata.sol";
 
 import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
+import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 
-import "@openzeppelin/contracts/utils/Strings.sol";
+import "hardhat/console.sol";
 
 contract ElementMetadata is IElementMetadata {
     mapping(Race => string) internal raceStrings;
@@ -150,6 +151,7 @@ contract ElementMetadata is IElementMetadata {
 
     function _buildMetadata(CharacterData memory data) internal view returns (string memory) {
         // MUST CONCATENATE THESE STRINGS IN THIS ORDER
+        console.log(string.concat(_buildCharacterMetadata(data), _buildStatsMetadata(data.userDefinedData.stats)));
         return string.concat(_buildCharacterMetadata(data), _buildStatsMetadata(data.userDefinedData.stats));
     }
 
@@ -216,29 +218,29 @@ contract ElementMetadata is IElementMetadata {
                     bytes(
                         abi.encodePacked(
                             '{"trait_type": "Strength",',
-                            '"value":"',
+                            '"value":',
                             Strings.toString(stats.strength),
-                            '"},',
+                            "},",
                             '{"trait_type": "Dexterity",',
-                            '"value":"',
+                            '"value":',
                             Strings.toString(stats.dexterity),
-                            '"},',
+                            "},",
                             '{"trait_type": "Charisma",',
-                            '"value":"',
+                            '"value":',
                             Strings.toString(stats.charisma),
-                            '"},',
+                            "},",
                             '{"trait_type": "Wisdom",',
-                            '"value":"',
+                            '"value":',
                             Strings.toString(stats.wisdom),
-                            '"},',
+                            "},",
                             '{"trait_type": "Intelligence",',
-                            '"value":"',
+                            '"value":',
                             Strings.toString(stats.intelligence),
-                            '"},',
+                            "},",
                             '{"trait_type": "Constitution",',
-                            '"value":"',
+                            '"value":',
                             Strings.toString(stats.constitution),
-                            '"}',
+                            "}",
                             "]",
                             "}"
                         )
